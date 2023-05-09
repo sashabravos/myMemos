@@ -25,4 +25,3 @@ class CustomTableViewCell: UITableViewCell {
         contentView.backgroundColor = .white
     }
 }
-

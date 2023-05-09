@@ -15,10 +15,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                willConnectTo session: UISceneSession,
                options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = (scene as? UIWindowScene) else { return }
+        
         window = UIWindow(windowScene: windowScene)
-        let viewController = ToDoTableViewController()
-        window?.rootViewController = viewController
         window?.makeKeyAndVisible()
+        window?.rootViewController = UINavigationController(rootViewController: ToDoTableViewController())
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
