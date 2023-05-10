@@ -9,4 +9,5 @@ import UIKit
 
 struct Keys {
     static let cellIdentifier = "reusableCell"
+    static let systemItemArray = "MemosArray"
 }
