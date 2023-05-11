@@ -15,8 +15,7 @@ class ToDoTableViewController: UITableViewController {
         return button
     }()
     
-    private var itemArray = ["First", "Second", "Third", "Fourth", "Fifth"]
-    
+    private var itemArray = [Item]()
     let defaults = UserDefaults.standard
     
     override func viewDidLoad() {
@@ -26,20 +25,46 @@ class ToDoTableViewController: UITableViewController {
         
         navigationItem.rightBarButtonItem = addButton
         
+        
+        let newItem = Item()
+        newItem.title = "Smth"
+        itemArray.append(newItem)
+        
+        let newItem2 = Item()
+        newItem2.title = "Smth more"
+        itemArray.append(newItem2)
+        
+        let newItem3 = Item()
+        newItem3.title = "Smth more more"
+        itemArray.append(newItem3)
+        
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: Keys.cellIdentifier)
         tableView.dataSource = self
         tableView.delegate = self
         
-        if let items = defaults.array(forKey: Keys.systemItemArray) as? [String] {
-            itemArray = items
-        }
+        
+
+//        if let items = defaults.array(forKey: Keys.systemItemArray) as? [String] {
+//            itemArray = items
+//        }
     }
     
     // MARK: - Tableview Datasource Methods
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: Keys.cellIdentifier, for: indexPath as IndexPath)
-        cell.textLabel!.text = "\(itemArray[indexPath.row])"
+        
+        let item = itemArray[indexPath.row]
+        
+        cell.textLabel?.text = item.title
+        
+        
+        if item.done == true {
+            cell.accessoryType = .checkmark
+        } else {
+            cell.accessoryType = .none
+            
+        }
         return cell
     }
     
@@ -50,11 +75,10 @@ class ToDoTableViewController: UITableViewController {
     // MARK: - Tableview Delegate Methods
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //        print("\(myCellsArray[indexPath.row])")
         
-        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
-            tableView.cellForRow(at: indexPath)?.accessoryType = .none
-        } else { tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark }
+        itemArray[indexPath.row].done = !itemArray[indexPath.row].done
+        
+        tableView.reloadData()
         
         tableView.deselectRow(at: indexPath, animated: true)
     }
@@ -72,8 +96,8 @@ class ToDoTableViewController: UITableViewController {
                 print("There is not a name")
                 return
             }
-            
-            self.itemArray.append(newItemName)
+            let newItem = Item()
+            newItem.title = newItemName
             self.defaults.set(self.itemArray, forKey: Keys.systemItemArray)
             self.tableView.reloadData()
         }

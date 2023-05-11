@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		033F3F322A080C0F00347DB5 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033F3F312A080C0F00347DB5 /* TableViewCell.swift */; };
 		033F3F342A080C4400347DB5 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033F3F332A080C4400347DB5 /* Constants.swift */; };
+		033F3F362A0C650900347DB5 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 033F3F352A0C650800347DB5 /* Item.swift */; };
 		038390A42A018D1600BA11F1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038390A32A018D1600BA11F1 /* AppDelegate.swift */; };
 		038390A62A018D1600BA11F1 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038390A52A018D1600BA11F1 /* SceneDelegate.swift */; };
 		038390A82A018D1600BA11F1 /* ToDoTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038390A72A018D1600BA11F1 /* ToDoTableViewController.swift */; };
@@ -21,6 +22,7 @@
 /* Begin PBXFileReference section */
 		033F3F312A080C0F00347DB5 /* TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
 		033F3F332A080C4400347DB5 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		033F3F352A0C650800347DB5 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		038390A02A018D1600BA11F1 /* myMemos.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = myMemos.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		038390A32A018D1600BA11F1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		038390A52A018D1600BA11F1 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -46,6 +48,41 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		033F3F372A0C653C00347DB5 /* Cotrollers */ = {
+			isa = PBXGroup;
+			children = (
+				038390A72A018D1600BA11F1 /* ToDoTableViewController.swift */,
+			);
+			path = Cotrollers;
+			sourceTree = "<group>";
+		};
+		033F3F382A0C654F00347DB5 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				033F3F332A080C4400347DB5 /* Constants.swift */,
+				033F3F352A0C650800347DB5 /* Item.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		033F3F392A0C656B00347DB5 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				038390A92A018D1600BA11F1 /* Main.storyboard */,
+				033F3F312A080C0F00347DB5 /* TableViewCell.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		033F3F3A2A0C659900347DB5 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				038390AC2A018D1700BA11F1 /* Assets.xcassets */,
+				038390AE2A018D1700BA11F1 /* LaunchScreen.storyboard */,
+			);
+			path = "Support Files";
+			sourceTree = "<group>";
+		};
 		038390972A018D1600BA11F1 = {
 			isa = PBXGroup;
 			children = (
@@ -69,12 +106,10 @@
 			children = (
 				038390A32A018D1600BA11F1 /* AppDelegate.swift */,
 				038390A52A018D1600BA11F1 /* SceneDelegate.swift */,
-				038390A72A018D1600BA11F1 /* ToDoTableViewController.swift */,
-				038390A92A018D1600BA11F1 /* Main.storyboard */,
-				033F3F312A080C0F00347DB5 /* TableViewCell.swift */,
-				033F3F332A080C4400347DB5 /* Constants.swift */,
-				038390AC2A018D1700BA11F1 /* Assets.xcassets */,
-				038390AE2A018D1700BA11F1 /* LaunchScreen.storyboard */,
+				033F3F372A0C653C00347DB5 /* Cotrollers */,
+				033F3F382A0C654F00347DB5 /* Model */,
+				033F3F392A0C656B00347DB5 /* Views */,
+				033F3F3A2A0C659900347DB5 /* Support Files */,
 				038390B12A018D1700BA11F1 /* Info.plist */,
 			);
 			path = myMemos;
@@ -217,6 +252,7 @@
 				038390A82A018D1600BA11F1 /* ToDoTableViewController.swift in Sources */,
 				033F3F322A080C0F00347DB5 /* TableViewCell.swift in Sources */,
 				038390A42A018D1600BA11F1 /* AppDelegate.swift in Sources */,
+				033F3F362A0C650900347DB5 /* Item.swift in Sources */,
 				038390A62A018D1600BA11F1 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
