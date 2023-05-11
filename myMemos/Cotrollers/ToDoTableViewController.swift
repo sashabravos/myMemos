@@ -9,6 +9,10 @@ import UIKit
 
 class ToDoTableViewController: UITableViewController {
     
+    let dataFilePath = FileManager.default.urls(for: .documentDirectory,
+                                                in: .userDomainMask).first?
+        .appending(path: "Items.plist")
+    
     private lazy var addButton: UIBarButtonItem = {
         let button = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewItem))
         button.tintColor = .label
@@ -16,10 +20,13 @@ class ToDoTableViewController: UITableViewController {
     }()
     
     private var itemArray = [Item]()
-    let defaults = UserDefaults.standard
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        //
+        //
+        //
+        //        print(dataFilePath)
         
         self.title = "Memos"
         
@@ -42,11 +49,9 @@ class ToDoTableViewController: UITableViewController {
         tableView.dataSource = self
         tableView.delegate = self
         
-        
-
-//        if let items = defaults.array(forKey: Keys.systemItemArray) as? [String] {
-//            itemArray = items
-//        }
+        //        if let items = defaults.array(forKey: Keys.systemItemArray) as? [Item] {
+        //            itemArray = items
+        //        }
     }
     
     // MARK: - Tableview Datasource Methods
@@ -58,13 +63,8 @@ class ToDoTableViewController: UITableViewController {
         
         cell.textLabel?.text = item.title
         
+        cell.accessoryType = item.done ? .checkmark : .none
         
-        if item.done == true {
-            cell.accessoryType = .checkmark
-        } else {
-            cell.accessoryType = .none
-            
-        }
         return cell
     }
     
@@ -78,8 +78,7 @@ class ToDoTableViewController: UITableViewController {
         
         itemArray[indexPath.row].done = !itemArray[indexPath.row].done
         
-        tableView.reloadData()
-        
+        saveItems()
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
@@ -98,8 +97,9 @@ class ToDoTableViewController: UITableViewController {
             }
             let newItem = Item()
             newItem.title = newItemName
-            self.defaults.set(self.itemArray, forKey: Keys.systemItemArray)
-            self.tableView.reloadData()
+            self.itemArray.append(newItem)
+            
+            self.saveItems()
         }
         
         alert.addTextField { (alertTextField) in alertTextField.placeholder = "Create new item"
@@ -107,6 +107,21 @@ class ToDoTableViewController: UITableViewController {
         }
         alert.addAction(action)
         present(alert, animated: true, completion: nil)
+    }
+    
+    // MARK: - Model Manipulation Methods
+    
+    func saveItems() {
+        let encoder = PropertyListEncoder()
+        do {
+            let data = try encoder.encode(itemArray)
+            try data.write(to: dataFilePath!)
+            
+        } catch {
+            print("Error encoding item array, \(error)")
+        }
+        
+        self.tableView.reloadData()
     }
     
 }
