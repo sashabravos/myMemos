@@ -6,12 +6,12 @@
 //
 
 import UIKit
+import CoreData
 
 class ToDoTableViewController: UITableViewController {
     
-    let dataFilePath = FileManager.default.urls(for: .documentDirectory,
-                                                in: .userDomainMask).first?
-        .appending(path: "Items.plist")
+    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     private lazy var addButton: UIBarButtonItem = {
         let button = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewItem))
@@ -23,35 +23,16 @@ class ToDoTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //
-        //
-        //
-        //        print(dataFilePath)
         
         self.title = "Memos"
         
         navigationItem.rightBarButtonItem = addButton
         
-        
-        let newItem = Item()
-        newItem.title = "Smth"
-        itemArray.append(newItem)
-        
-        let newItem2 = Item()
-        newItem2.title = "Smth more"
-        itemArray.append(newItem2)
-        
-        let newItem3 = Item()
-        newItem3.title = "Smth more more"
-        itemArray.append(newItem3)
-        
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: Keys.cellIdentifier)
-        tableView.dataSource = self
-        tableView.delegate = self
-        
-        //        if let items = defaults.array(forKey: Keys.systemItemArray) as? [Item] {
-        //            itemArray = items
-        //        }
+        print((UIApplication.shared.delegate as! AppDelegate)
+            .persistentContainer.persistentStoreCoordinator.persistentStores.first?.url)
+//        print(dataFilePath)
+//        loadItems()
     }
     
     // MARK: - Tableview Datasource Methods
@@ -95,8 +76,10 @@ class ToDoTableViewController: UITableViewController {
                 print("There is not a name")
                 return
             }
-            let newItem = Item()
+            
+            let newItem = Item(context: self.context)
             newItem.title = newItemName
+            newItem.done = false
             self.itemArray.append(newItem)
             
             self.saveItems()
@@ -112,16 +95,24 @@ class ToDoTableViewController: UITableViewController {
     // MARK: - Model Manipulation Methods
     
     func saveItems() {
-        let encoder = PropertyListEncoder()
         do {
-            let data = try encoder.encode(itemArray)
-            try data.write(to: dataFilePath!)
+            try context.save()
             
         } catch {
-            print("Error encoding item array, \(error)")
+            print("Error saving context, \(error)")
         }
         
         self.tableView.reloadData()
     }
     
+//    func loadItems() {
+//        if let data = try? Data(contentsOf: dataFilePath!) {
+//            let decoder = PropertyListDecoder()
+//            do {
+//                itemArray = try decoder.decode([Item].self, from: data)
+//            } catch {
+//                print("Error decoding item array, \(error)")
+//            }
+//        }
+//    }
 }
