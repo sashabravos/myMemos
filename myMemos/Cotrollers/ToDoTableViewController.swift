@@ -8,17 +8,10 @@
 import UIKit
 import CoreData
 
-class ToDoTableViewController: UITableViewController, UISearchBarDelegate {//}, UISearchResultsUpdating {
-
-    private var itemArray = [Item]()
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+final class ToDoTableViewController: UITableViewController, UISearchBarDelegate {
     
-//    private var searchController: UISearchController = {
-//        let searchController = UISearchController(searchResultsController: nil)
-//        searchController.obscuresBackgroundDuringPresentation = true
-//        searchController.searchBar.placeholder = "Search"
-//        return searchController
-//    }()
+    private var itemArray = [Item]()
+    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     private lazy var addButton: UIBarButtonItem = {
         let button = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewItem))
@@ -26,26 +19,29 @@ class ToDoTableViewController: UITableViewController, UISearchBarDelegate {//}, 
         return button
     }()
     
+    private let searchController = UISearchController(searchResultsController: nil)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        //        print((UIApplication.shared.delegate as! AppDelegate)
-        //            .persistentContainer.persistentStoreCoordinator.persistentStores.first?.url)
         
         // setup navigationBar
-        self.title = "Memos"
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.title = "Memos"
         navigationItem.rightBarButtonItem = addButton
         
-        // setup searchBar
-//        tableView.tableHeaderView = searchController.searchBar
-//        searchController.searchBar.delegate = self
-//        searchController.searchResultsUpdater = self
-//        definesPresentationContext = true
-        let searchBar = UISearchBar()
-                searchBar.searchBarStyle = .minimal
-                searchBar.placeholder = "Search"
-                searchBar.tintColor = .black
-                searchBar.delegate = self
-                navigationItem.titleView = searchBar
+        // setup search bar
+        searchController.searchBar.delegate = self
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+        
+        // setup appearance for navigation bar
+        let appearance = UINavigationBarAppearance()
+        appearance.backgroundColor = .systemBackground
+        appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.label]
+        appearance.titleTextAttributes = [.foregroundColor: UIColor.label]
+        
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
         
         // register cell
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: Keys.cellIdentifier)
@@ -103,9 +99,6 @@ class ToDoTableViewController: UITableViewController, UISearchBarDelegate {//}, 
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        //        context.delete(itemArray[indexPath.row])
-        //        itemArray.remove(at: indexPath.row)
-        
         itemArray[indexPath.row].done = !itemArray[indexPath.row].done
         
         saveItems()
@@ -117,7 +110,6 @@ class ToDoTableViewController: UITableViewController, UISearchBarDelegate {//}, 
     func saveItems() {
         do {
             try context.save()
-            
         } catch {
             print("Error saving context, \(error)")
         }
@@ -137,17 +129,28 @@ class ToDoTableViewController: UITableViewController, UISearchBarDelegate {//}, 
     // MARK: - Search Bar Methods
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-//        let search = searchController.searchBar
         let request: NSFetchRequest <Item> = Item.fetchRequest()
-        print(searchBar.text)
-
-//        print(search.text)
+        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text ?? "Search has no text")
+        
+        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+        
+        do {
+            itemArray = try context.fetch(request)
+        } catch {
+            print("Error fetching data from context \(error)")
+        }
+        
+        tableView.reloadData()
     }
     
-//    func updateSearchResults(for searchController: UISearchController) {
-////        let request: NSFetchRequest <Item> = Item.fetchRequest()
-////
-////        print(searchController.searchBar.text)
-//        print("update is working")
-//    }
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchText.isEmpty {
+            loadItems()
+            DispatchQueue.main.async {
+                searchBar.resignFirstResponder()
+            }
+        } else {
+            searchBarSearchButtonClicked(searchBar)
+        }
+    }
 }
