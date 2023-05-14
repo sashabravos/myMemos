@@ -26,7 +26,7 @@ final class MemosViewController: UITableViewController, UISearchBarDelegate {
         super.viewDidLoad()
         
         // setup navigationBar
-        navigationController?.navigationBar.prefersLargeTitles = true
+//        navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.title = "Items"
         navigationItem.rightBarButtonItem = addButton
         
@@ -48,36 +48,6 @@ final class MemosViewController: UITableViewController, UISearchBarDelegate {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: Keys.memosCellIdentifier)
         
         loadItems()
-    }
-    
-    // MARK: - Add New Items
-    
-    @objc func addNewItem() {
-        
-        var addItemTextField = UITextField()
-        
-        let alert = UIAlertController(title: "Add new item", message: "", preferredStyle: .alert)
-        
-        let action = UIAlertAction(title: "Add item", style: .default) { _ in
-            guard let newItemName = addItemTextField.text, !newItemName.isEmpty else {
-                print("There is not a name")
-                return
-            }
-            
-            let newItem = Item(context: self.context)
-            newItem.title = newItemName
-            newItem.done = false
-            self.itemArray.append(newItem)
-            
-            self.saveItems()
-        }
-        
-        alert.addTextField { (alertTextField) in alertTextField.placeholder = "Create new item"
-            addItemTextField = alertTextField
-        }
-        
-        alert.addAction(action)
-        present(alert, animated: true, completion: nil)
     }
     
     // MARK: - Tableview Datasource Methods
@@ -127,6 +97,37 @@ final class MemosViewController: UITableViewController, UISearchBarDelegate {
         }
         
         tableView.reloadData()
+    }
+    
+    // MARK: - Add New Items
+    
+    @objc func addNewItem() {
+        
+        var addItemTextField = UITextField()
+        
+        let alert = UIAlertController(title: "Add new item", message: "", preferredStyle: .alert)
+        
+        let action = UIAlertAction(title: "Add item", style: .default) { _ in
+            guard let newItemName = addItemTextField.text, !newItemName.isEmpty
+            else {
+                print("There is not a name")
+                return
+            }
+            
+            let newItem = Item(context: self.context)
+            newItem.title = newItemName
+            newItem.done = false
+            self.itemArray.append(newItem)
+            
+            self.saveItems()
+        }
+        
+        alert.addTextField { (alertTextField) in alertTextField.placeholder = "Create new item"
+            addItemTextField = alertTextField
+        }
+        
+        alert.addAction(action)
+        present(alert, animated: true, completion: nil)
     }
     
     // MARK: - Search Bar Methods

@@ -10,10 +10,12 @@ import CoreData
 
 final class CategoryViewController: UITableViewController {
 
-    let testArray = ["a", "b", "c", "d"]
+    private var categoriesArray = [Category]()
+    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    private let request: NSFetchRequest <Category> = Category.fetchRequest()
     
     private lazy var addButton: UIBarButtonItem = {
-        let button = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewItem))
+        let button = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewCategory))
         button.tintColor = .label
         return button
     }()
@@ -29,63 +31,84 @@ final class CategoryViewController: UITableViewController {
         navigationItem.rightBarButtonItem = addButton
         
         // register cell
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: Keys.memosCellIdentifier)
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: Keys.categoryСellIdentifier)
     }
 
     // MARK: - Tableview Datasource Methods
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: Keys.memosCellIdentifier, for: indexPath as IndexPath)
-        cell.textLabel!.text = "\(testArray[indexPath.row])"
+        let cell = tableView.dequeueReusableCell(withIdentifier: Keys.categoryСellIdentifier,
+                                                 for: indexPath as IndexPath)
+
+        let category = categoriesArray[indexPath.row]
+        cell.textLabel?.text = category.name
         return cell
     }
-    
-//    override func numberOfSections(in tableView: UITableView) -> Int {
-//        return 1
-//    }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return testArray.count
+        return categoriesArray.count
     }
-//    // MARK: - Tableview Delegate Methods
-//    
-//    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        
-//        itemArray[indexPath.row].done = !itemArray[indexPath.row].done
-//        
-//        saveItems()
-//        tableView.deselectRow(at: indexPath, animated: true)
-//    }
-    // MARK: - Add New Categories
     
-    @objc func addNewItem() {
+//    // MARK: - Tableview Delegate Methods
+    
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-//        var addItemTextField = UITextField()
-//
-//        let alert = UIAlertController(title: "Add new item", message: "", preferredStyle: .alert)
-//
-//        let action = UIAlertAction(title: "Add item", style: .default) { _ in
-//            guard let newItemName = addItemTextField.text, !newItemName.isEmpty else {
-//                print("There is not a name")
-//                return
-//            }
-//
-//            let newItem = Item(context: self.context)
-//            newItem.title = newItemName
-//            newItem.done = false
-//            self.itemArray.append(newItem)
-//
-//            self.saveItems()
-//        }
-//
-//        alert.addTextField { (alertTextField) in alertTextField.placeholder = "Create new item"
-//            addItemTextField = alertTextField
-//        }
-//
-//        alert.addAction(action)
-//        present(alert, animated: true, completion: nil)
+        print(categoriesArray[indexPath.row])
+        
+        saveItems()
+        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     // MARK: - Data Manipulation Methods
 
+    func saveItems() {
+        do {
+            try context.save()
+        } catch {
+            print("Error saving context, \(error)")
+        }
+
+        self.tableView.reloadData()
+    }
+
+    func loadItems() {
+
+        do {
+            categoriesArray = try context.fetch(request)
+        } catch {
+            print("Error fetching data from context \(error)")
+        }
+
+        tableView.reloadData()
+    }
+    
+    // MARK: - Add New Categories
+    
+    @objc func addNewCategory() {
+        
+        var categoryTextField = UITextField()
+
+        let alert = UIAlertController(title: "Add new category", message: "", preferredStyle: .alert)
+
+        let action = UIAlertAction(title: "Add category", style: .default) { _ in
+            guard let newCategoryName = categoryTextField.text, !newCategoryName.isEmpty
+            else {
+                print("There is not a name")
+                return
+            }
+
+            let newCategory = Category(context: self.context)
+            newCategory.name = newCategoryName
+            self.categoriesArray.append(newCategory)
+
+            self.saveItems()
+        }
+
+        alert.addTextField { (alertTextField) in alertTextField.placeholder = "Create new category"
+            categoryTextField = alertTextField
+        }
+
+        alert.addAction(action)
+        present(alert, animated: true, completion: nil)
+    }
 }
