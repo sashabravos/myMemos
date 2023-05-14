@@ -8,6 +8,8 @@
 import Foundation
 
 struct Keys {
-    static let cellIdentifier = "reusableCell"
+    static let memosCellIdentifier = "memosCell"
+    static let categoryСellIdentifier = "categoryCell"
+
     static let systemItemArray = "MemosArray"
 }

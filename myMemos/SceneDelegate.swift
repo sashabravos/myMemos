@@ -18,7 +18,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(windowScene: windowScene)
         window?.makeKeyAndVisible()
-        window?.rootViewController = UINavigationController(rootViewController: ToDoTableViewController())
+        window?.rootViewController = UINavigationController(rootViewController: CategoryViewController())
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

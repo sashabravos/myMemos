@@ -8,10 +8,11 @@
 import UIKit
 import CoreData
 
-final class ToDoTableViewController: UITableViewController, UISearchBarDelegate {
+final class MemosViewController: UITableViewController, UISearchBarDelegate {
     
     private var itemArray = [Item]()
     private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    private let request: NSFetchRequest <Item> = Item.fetchRequest()
     
     private lazy var addButton: UIBarButtonItem = {
         let button = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNewItem))
@@ -26,7 +27,7 @@ final class ToDoTableViewController: UITableViewController, UISearchBarDelegate 
         
         // setup navigationBar
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.title = "Memos"
+        navigationItem.title = "Items"
         navigationItem.rightBarButtonItem = addButton
         
         // setup search bar
@@ -44,7 +45,7 @@ final class ToDoTableViewController: UITableViewController, UISearchBarDelegate 
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
         
         // register cell
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: Keys.cellIdentifier)
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: Keys.memosCellIdentifier)
         
         loadItems()
     }
@@ -82,7 +83,7 @@ final class ToDoTableViewController: UITableViewController, UISearchBarDelegate 
     // MARK: - Tableview Datasource Methods
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: Keys.cellIdentifier, for: indexPath as IndexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: Keys.memosCellIdentifier, for: indexPath as IndexPath)
         
         let item = itemArray[indexPath.row]
         cell.textLabel?.text = item.title
@@ -118,22 +119,7 @@ final class ToDoTableViewController: UITableViewController, UISearchBarDelegate 
     }
     
     func loadItems() {
-        let request: NSFetchRequest <Item> = Item.fetchRequest()
-        do {
-            itemArray = try context.fetch(request)
-        } catch {
-            print("Error fetching data from context \(error)")
-        }
-    }
-    
-    // MARK: - Search Bar Methods
-    
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        let request: NSFetchRequest <Item> = Item.fetchRequest()
-        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text ?? "Search has no text")
-        
-        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
-        
+
         do {
             itemArray = try context.fetch(request)
         } catch {
@@ -141,6 +127,17 @@ final class ToDoTableViewController: UITableViewController, UISearchBarDelegate 
         }
         
         tableView.reloadData()
+    }
+    
+    // MARK: - Search Bar Methods
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        
+        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text ?? "Search has no text")
+        
+        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+        
+        loadItems()
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {

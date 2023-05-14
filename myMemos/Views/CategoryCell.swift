@@ -1,15 +1,15 @@
 //
-//  TableViewCell.swift
+//  CategoryCell.swift
 //  myMemos
 //
-//  Created by Александра Кострова on 07.05.2023.
+//  Created by Александра Кострова on 15.05.2023.
 //
 
 import UIKit
 
-class CustomTableViewCell: UITableViewCell {
-    
-    static let identifier = Keys.cellIdentifier
+class CategoryCell: UITableViewCell {
+
+    static let identifier = Keys.categoryСellIdentifier
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
