@@ -91,7 +91,16 @@ final class MemosViewController: UITableViewController, UISearchBarDelegate {
         self.tableView.reloadData()
     }
     
-    func loadItems() {
+    func loadItems(with predicate: NSPredicate? = nil) {
+
+        let categoryPredicate = NSPredicate(format: "parentCategory.name MATCHES %@", selectedCategory!.name!)
+        
+        if let additionalPredicate = predicate {
+            request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates:
+                                                        [categoryPredicate, additionalPredicate])
+        } else {
+            request.predicate = categoryPredicate
+        }
 
         do {
             itemArray = try context.fetch(request)
@@ -138,11 +147,11 @@ final class MemosViewController: UITableViewController, UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
-        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text ?? "Search has no text")
+        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text ?? "Search has no text")
         
         request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
         
-        loadItems()
+        loadItems(with: predicate)
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
