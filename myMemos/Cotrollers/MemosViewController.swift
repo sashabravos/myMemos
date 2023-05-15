@@ -11,6 +11,11 @@ import CoreData
 final class MemosViewController: UITableViewController, UISearchBarDelegate {
     
     private var itemArray = [Item]()
+    var selectedCategory : Category?  {
+        didSet {
+            loadItems()
+        }
+    }
     private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     private let request: NSFetchRequest <Item> = Item.fetchRequest()
     
@@ -46,8 +51,6 @@ final class MemosViewController: UITableViewController, UISearchBarDelegate {
         
         // register cell
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: Keys.memosCellIdentifier)
-        
-        loadItems()
     }
     
     // MARK: - Tableview Datasource Methods
@@ -117,6 +120,7 @@ final class MemosViewController: UITableViewController, UISearchBarDelegate {
             let newItem = Item(context: self.context)
             newItem.title = newItemName
             newItem.done = false
+            newItem.parentCategory = self.selectedCategory
             self.itemArray.append(newItem)
             
             self.saveItems()

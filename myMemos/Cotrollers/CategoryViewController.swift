@@ -32,6 +32,8 @@ final class CategoryViewController: UITableViewController {
         
         // register cell
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: Keys.categoryСellIdentifier)
+        
+        loadCategories()
     }
 
     // MARK: - Tableview Datasource Methods
@@ -53,30 +55,35 @@ final class CategoryViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        print(categoriesArray[indexPath.row])
+        let memosVC = MemosViewController()
+        show(memosVC, sender: self)
         
-        saveItems()
+        if let indexPath = tableView.indexPathForSelectedRow {
+            memosVC.selectedCategory = categoriesArray[indexPath.row]
+        }
+        
+        saveCategories()
         tableView.deselectRow(at: indexPath, animated: true)
     }
     
     // MARK: - Data Manipulation Methods
 
-    func saveItems() {
+    func saveCategories() {
         do {
             try context.save()
         } catch {
-            print("Error saving context, \(error)")
+            print("Error saving category \(error)")
         }
 
         self.tableView.reloadData()
     }
 
-    func loadItems() {
+    func loadCategories() {
 
         do {
             categoriesArray = try context.fetch(request)
         } catch {
-            print("Error fetching data from context \(error)")
+            print("Error loading categories \(error)")
         }
 
         tableView.reloadData()
@@ -101,7 +108,7 @@ final class CategoryViewController: UITableViewController {
             newCategory.name = newCategoryName
             self.categoriesArray.append(newCategory)
 
-            self.saveItems()
+            self.saveCategories()
         }
 
         alert.addTextField { (alertTextField) in alertTextField.placeholder = "Create new category"
