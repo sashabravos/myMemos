@@ -1,1 +1,2 @@
-# Just a notes app with CoreData integration
+# My Memos
+Just a notes app with CoreData integration
